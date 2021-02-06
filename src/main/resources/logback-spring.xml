@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!--로그 파일 저장 위치-->
+    <!-- logfile save path-->
     <property name="LOG_PATH" value="./logs"/>
     <property name="LOG_FILENAME" value="logback"/>
     <property name="LOG_PATTERN" value="[%-5level] %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n" />
@@ -33,7 +33,7 @@
         </rollingPolicy>
     </appender>
     
-    <logger name="com.sensing.markdown.markdown" level="DEBUG">
+    <logger name="com.sensweb.myapp" level="DEBUG">
           <!-- <appender-ref ref="CONSOLE"/> -->
            <appender-ref ref="CONSOLE"/>
     </logger>
@@ -44,12 +44,6 @@
         <appender-ref ref="Error"/> -->
     </logger>
     
-
-
-    <logger name="com.sensing.markdown" level="INFO">
-        <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
-    </logger>
-
     <!-- TRACE < DEBUG < INFO < WARN < ERROR -->
     <root level="WARN">
         <appender-ref ref="CONSOLE" />
