@@ -10,8 +10,9 @@
   + Thyemleaf
 
 + **goal**
+  + Using WYSIWYG Editor (Summernote, toastUI, etc ..)
   + Make Markdown to Html Converter(Using RegEx) 😊
-  + Make WYSIWYG Web Editor 😊
+  + Make My WYSIWYG Web Editor 😊
   + static html build 😊
 
 

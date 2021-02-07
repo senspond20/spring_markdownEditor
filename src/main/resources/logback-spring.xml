@@ -2,25 +2,24 @@
 <configuration>
 
     <!-- logfile save path-->
-    <property name="LOG_PATH" value="./logs"/>
-    <property name="LOG_FILENAME" value="logback"/>
-    <property name="LOG_PATTERN" value="[%-5level] %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n" />
-    <property name="LOG_PATTERN2" value="[%-5level] [%logger{0}:%line] - %msg%n" />
 
+    <property name="LOG_PATH" value="d:/logs/myapp"/> 
+    <property name="LOG_FILENAME" value="logback"/>
+
+    <property name="LOG_PATTERN" value="[%-5level] %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n" />
+    <property name="LOG_PATTERN_DEV" value="[%-5level] [%logger{0}:%line] - %msg%n" />
+    <property name="LOG_PATTERN_ROLLING" value="[%-5level][%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %logger{35} - %msg%n" />
+   
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>${LOG_PATTERN2}</Pattern>
+            <Pattern>${LOG_PATTERN_DEV}</Pattern>
         </layout>
     </appender>
-    <appender name="SAMPLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${LOG_PATTERN2}</pattern>
-        </encoder>
-    </appender>
-    <appender name="DAILY_ROLLING_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="DAILY_ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/logback.log</file>
         <encoder>
-            <pattern>[%-5level][%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %logger{35} - %msg%n</pattern>
+            <pattern>${LOG_PATTERN_ROLLING}</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/${LOG_FILENAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
@@ -33,19 +32,16 @@
         </rollingPolicy>
     </appender>
     
-    <logger name="com.sensweb.myapp" level="DEBUG">
-          <!-- <appender-ref ref="CONSOLE"/> -->
-           <appender-ref ref="CONSOLE"/>
+    <logger name="com.sensweb.myapp" level="DEBUG" additivity ="false">
+        <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="org.springframework.web" level="INFO" additivity="false">
-        <!-- <appender-ref ref="CONSOLE"/> -->
-        <!-- <appender-ref ref="File"/>
-        <appender-ref ref="Error"/> -->
+    <logger name="org.springframework.web" level="DEBUG" additivity="false">
+        <appender-ref ref="DAILY_ROLLING_FILE" />
     </logger>
     
     <!-- TRACE < DEBUG < INFO < WARN < ERROR -->
-    <root level="WARN">
+    <root level="INFO" additivity ="false">
         <appender-ref ref="CONSOLE" />
     </root>
 </configuration>
