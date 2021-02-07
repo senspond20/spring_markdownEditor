@@ -9,7 +9,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class FileIsSaveDto{
+public class FileSaveResponseDto{
     private boolean isSaveSuccess;
     private FileInfoVO fileInfo;
 }

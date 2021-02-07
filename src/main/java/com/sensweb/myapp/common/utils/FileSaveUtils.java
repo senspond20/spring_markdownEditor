@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sensweb.myapp.common.model.FileInfoVO;
-import com.sensweb.myapp.common.model.FileIsSaveDto;
+import com.sensweb.myapp.common.model.FileSaveResponseDto;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class FileSaveUtils {
        파일 한개 저장
        FileIsSaveDto 리턴
     */
-    public FileIsSaveDto saveFile(MultipartFile saveFile, String filePath){
+    public FileSaveResponseDto saveFile(MultipartFile saveFile, String filePath){
         dirExistCheakAndMakeDir(filePath) ; 
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -46,17 +46,17 @@ public class FileSaveUtils {
         if(!saveFile.isEmpty()){
             try { 
                 saveFile.transferTo(file.getSaveFile()); 
-                return new FileIsSaveDto(true, file);
+                return new FileSaveResponseDto(true, file);
 
             }catch (Exception e) { 
                 logger.debug("[{}] file save fail : {}" , file.toString(), e.getMessage());
                 resultMap.put("success", false);
                 resultMap.put("fileInfo", file);
-                return new FileIsSaveDto(false, file);
+                return new FileSaveResponseDto(false, file);
             }
         }else{
             logger.debug("MultipartFile empty");
-            return new FileIsSaveDto(false, file);
+            return new FileSaveResponseDto(false, file);
         }
     }
 
@@ -65,12 +65,12 @@ public class FileSaveUtils {
        성공시 : true 리턴
        실패시 : false 리턴
     */
-    public boolean saveFileBoolean(MultipartFile saveFile, String filePath){
+    public boolean saveFileBoolean(MultipartFile files, String filePath){
         dirExistCheakAndMakeDir(filePath) ; 
-        if(!saveFile.isEmpty()){
-            FileInfoVO file = new FileInfoVO(saveFile, filePath);
+        if(!files.isEmpty()){
+            FileInfoVO file = new FileInfoVO(files, filePath);
             try { 
-                saveFile.transferTo(file.getSaveFile()); 
+                files.transferTo(file.getSaveFile()); 
                 return true; 
             }catch (Exception e) { 
                 logger.debug("[{}] file save fail : {}" , file.toString(), e.getMessage());
@@ -100,16 +100,17 @@ public class FileSaveUtils {
 
     /*
        여러개 파일 저장
-       List<FileIsSaveDto> 리턴
+       List<FileSaveResponseDto> 리턴
     */
-    public List<FileIsSaveDto> saveFiles(MultipartFile[] saveFiles, String filePath) {
+    public List<FileSaveResponseDto> saveFiles(MultipartFile[] saveFiles, String filePath) {
 
         dirExistCheakAndMakeDir(filePath) ;
-        List<FileIsSaveDto> uploadFileList = new ArrayList<FileIsSaveDto>();
+        List<FileSaveResponseDto> uploadFileList = new ArrayList<FileSaveResponseDto>();
         for(MultipartFile f : saveFiles) { 
-            uploadFileList.add(new FileIsSaveDto(saveFileBoolean(f, filePath), new FileInfoVO(f, filePath) ));
+            uploadFileList.add(new FileSaveResponseDto(saveFileBoolean(f, filePath), new FileInfoVO(f, filePath) ));
         } 
         return uploadFileList;
     }
 
+ 
 }
