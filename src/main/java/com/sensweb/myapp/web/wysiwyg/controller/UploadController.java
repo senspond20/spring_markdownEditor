@@ -39,7 +39,7 @@ public class UploadController {
 
         logger.debug("파일 저장 성공 여부 : {}", fsd.isSaveSuccess());
         logger.debug("파일 정보 : {}", fsd.getFileInfo().toStringMultiline());
-        logger.debug("resourse {}", upService.load(fsd.getFileInfo().getRenameFileName()));
+     //   logger.debug("resourse {}", upService.load(fsd.getFileInfo().getRenameFileName()));
         return ResponseEntity.ok().body(fsd);
     }
 
