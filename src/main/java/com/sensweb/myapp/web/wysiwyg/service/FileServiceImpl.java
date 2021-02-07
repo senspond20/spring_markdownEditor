@@ -29,7 +29,6 @@ import com.sensweb.myapp.common.model.FileSaveResponseDto;
 @Service("fileService")
 public class FileServiceImpl implements FileService{
     
-    // private final String FILE_ROOT = "d:/upload";
     private final Path FILE_ROOT = Paths.get("d:/upload");
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
@@ -55,9 +54,9 @@ public class FileServiceImpl implements FileService{
     }
     
     @Override
-    public Resource load(String filename) {
+    public Resource load(String fileName) {
         try {
-            Path file = FILE_ROOT.resolve(filename);
+            Path file = FILE_ROOT.resolve(fileName);
             Resource resource = new UrlResource(file.toUri());
       
             if (resource.exists() || resource.isReadable()) {
@@ -72,8 +71,19 @@ public class FileServiceImpl implements FileService{
     }
     @Override
     public void deleteAll(){
+        // 폴더까지 다 삭제된다.
         FileSystemUtils.deleteRecursively(FILE_ROOT.toFile());
-        logger.debug("파일이 삭제되었습니다.");
+        logger.debug("모든 파일이 삭제되었습니다.");
+    }
+
+    @Override
+    public void deleteFile(String fileName) {
+        try {
+            FileSystemUtils.deleteRecursively(FILE_ROOT.resolve(fileName));
+            logger.debug("[{}] 파일이 삭제되었습니다.",fileName);
+        } catch (IOException e) {
+            logger.debug("파일이 존재하지 않습니다.");
+        }
     }
 
     @Override

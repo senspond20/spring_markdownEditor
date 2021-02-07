@@ -5,12 +5,152 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/assets/css/jquery.jsonview.css"> 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .frmarea{background-color: rgb(107, 136, 218);}
+        .flex-c{margin-top: 10px; display: flex; justify-content: center; }
+        #msg{margin-top:14px; margin-bottom: 10px; font-size: large ;}
+        #uploadFileInfo{width: 400px; background-color: rgb(247, 245, 243); height: 400px; margin-right: 30px; border-radius: 20px; padding-top: 20px;}
+        form{align-items: center; background-color: rgb(247, 245, 243); padding: 5px; border-radius: 10px;}
+
+    </style>
 </head>
 <body>
-    <form action="/uploadfile" method="post" enctype="multipart/form-data">
-        <input type="file" name ="file" />
-        <input type ="submit" value="submit" />
-    </form>
-    <div id ="result"></div>
+    <h2 class="text-center">File Upload</h2>
+    <div class="frmarea flex-c">
+        <form class="flex-c" id ="frm" onsubmit="return false">
+            <input type="file" name ="file"/>
+            <input id ="submit" type ="submit" value="전송" class="btn btn-primary"/>
+            <input id ="reload" type ="button" value="새로고침" class="btn btn-default"/>
+        </form>
+    </div>
+    <section class="flex-c">
+        <article>
+            <div id="msg" class="text-center">Message</div>
+            <div id ="uploadFileInfo"></div>   
+        </article>
+        <article>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="4" class="text-center">파일 목록</th>
+                        <td colspan="1"><button class="btn btn-danger" id ="deleteAll">전부 삭제</button></td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </article>
+    </section>
+   
+  
+
+    <script src="/assets/js/jquery-3.3.1.min.js"></script>
+    <script src="/assets/js/jquery.jsonview.js"></script>
+    <script>
+       $(document).ready(function(){
+            loadFileList();
+       })
+       $('#reload').on('click',function(){
+           window.location.reload();
+       })
+       var clear = function(){
+            $('tbody').html(`<tr class ="isNotFileList"><td colspan="5">파일 목록이 없습니다.</td></tr>`);
+       }
+       // 파일 목록 불러오기
+       var loadFileList = function(){            
+            $.ajax({
+                    type : "Get",
+                    url : "/file/loadAll",
+                }).done(function(data){
+                    $('#msg').html('파일 목록 불러오기')
+                    var json = JSON.stringify(data);
+                    $("#uploadFileInfo").JSONView(json);
+
+                    var temp = [];
+                    if(data.length == 0){
+                        clear();
+                    }else{
+                        // $('.isNotFileList').hide();
+                        data.forEach(item => {
+                            var html = `<tr class ="fileList">
+                                <td colspan="4">${item}</td>
+                                <td><button class="btn btn-default deleteBtn" onClick = "deleteThisFile(this);">파일삭제</button></td>
+                            </tr>`;
+                            temp.push(html);
+                            $('tbody').html(temp);
+                        });
+                    }
+                    console.log(data);
+                });
+       }
+
+       // 전송. 파일 저장
+       $('#submit').on('click',function(){
+            var file =$("input[name=file]")[0].files[0];
+            if(file != undefined){
+                if(file.size > 10000000){
+                    alert('파일이 너무 큽니다. 10M 이하로 올려주세요')
+                }else{
+                    var form_data = new FormData();
+                    form_data.append('file', file);	
+                    $.ajax({
+                        data : form_data,
+                        type : "POST",
+                        url : "/file/upload",
+                        cache : false,
+                        contentType : false,
+                        enctype : 'multipart/form-data',
+                        processData : false
+                    }).done(function(data){
+                        console.log(data);
+                        var json = JSON.stringify(data);
+                        // $('#uploadFileInfo').html(json);
+                        $('.isNotFileList').remove();
+                        $('#msg').html('파일 추가')
+                        $("#uploadFileInfo").JSONView(json);
+                        var html = `<tr class ="fileList">
+                                    <td colspan="4">${data.fileInfo.renameFileName}</td>
+                                    <td><button class="btn btn-default removeBtn" onClick = "deleteThisFile(this)">파일삭제</button></td>
+                                </tr>`
+                        $('tbody').append(html)
+                    })
+                }
+            }else{
+                alert('파일을 올리고 전송버튼 눌러주세요');
+            }
+       });
+
+        // 파일 삭제
+        function deleteThisFile(current){
+            var tr = $(current).parent().parent();
+            var renameFileName = tr.children().eq(0).html();
+            console.log(tr);
+            $.ajax({
+                type : "POST",
+                dataType :"json",
+                data : {
+                    fileName : renameFileName,
+                },
+                url : "/file/delete",
+            }).done(function(data){
+                $('#msg').html('파일 삭제')
+                $("#uploadFileInfo").JSONView(JSON.stringify(renameFileName))
+                tr.remove();
+            });
+       }
+
+       // 전부 삭제
+       $('#deleteAll').on('click',function(){
+            $.ajax({
+                type : "GET",
+                url : "/file/deleteAll",
+            }).done(function(data){
+                $('#msg').html('파일 전부 삭제')
+                $("#uploadFileInfo").html(' 모든 파일이 삭제 되었습니다.');
+                clear();
+            });
+       })
+    </script>
 </body>
 </html>
