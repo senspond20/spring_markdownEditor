@@ -2,11 +2,102 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- Toast Editor 2.0.0과 의존성 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/2.0.0/toastui-editor.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/v4.10.0/tui-grid.min.css">
+    <style>
+       #editor h1{color :red;}
+       /* #editor pre {background: black;} */
+       #editor pre code{color : #fff}
+    </style>
 </head>
-<body>
-    toastui
+    <div class="code-html tui-doc-contents">
+        <div id="editor" style="box-sizing: border-box;"></div>
+    </div>
+    <br>
+    <button onclick="ToView();">↓↓↓ 불러서 넣기 ↓↓↓</button>
+    <br>
+    <br>
+    <div class="code-html tui-doc-contents">
+        <div id="viewer"></div>
+    </div>
+   
+  
+     <!-- Toast Editor 2.0.0 -->
+     <!--<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.js"></script>-->
+    <script src="https://uicdn.toast.com/editor/2.0.0/toastui-editor-all.min.js"></script>
+    <script>
+        /* eslint-disable no-unused-vars */
+        const content = [
+            '![image](https://uicdn.toast.com/toastui/img/tui-editor-bi.png)',
+            '',
+            '# Heading 1',
+            '## Heading 2',
+            '### Heading 3',
+            '#### Heading 4',
+            '##### Heading 5',
+            '###### Heading 6',
+            '',
+            '**bold** *italic* ~~strikethrough~~',
+            '<span style="color:#e11d21;">Color Syntax</span>',
+            '[link](https://nhn.github.io/tui.editor/)',
+            '',
+            '---',
+            'horizontal line',
+            '***',
+            '',
+            '> block quote',
+            '>> block quote (2 depth)',
+            '>>> block quote (3 depth)',
+            '',
+            '* list',
+            '    * list indented',
+            '1. ordered',
+            '2. list',
+            '    1. ordered list',
+            '    2. indented',
+            '',
+            '- [ ] task',
+            '- [x] list completed',
+            '',
+            '`inline code`',
+            '',
+            '    code block',
+            '```js',
+            'console.log("fenced code block");',
+            '```',
+            '<pre>**HTML block**</pre>',
+            '',
+            '| table | head |',
+            '| ----  | ---- |',
+            '| table | body |'
+        ].join('\n');
+
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),
+            previewStyle: 'vertical',
+            // previewStyle: 'self',
+            initialEditType: "wysiwyg",
+            height: '90vh',
+            initialValue: content
+        });
+
+        const viewer = toastui.Editor.factory({
+            el: document.querySelector('#viewer'),
+            viewer: true,
+            height: '500px',
+            initialValue: ''
+        });
+
+        function ToView() {
+            viewer.setMarkdown(editor.getMarkdown());
+        };
+    </script>
+
+
 </body>
+
 </html>

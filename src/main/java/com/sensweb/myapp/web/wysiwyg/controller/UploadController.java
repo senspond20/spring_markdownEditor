@@ -1,5 +1,12 @@
 package com.sensweb.myapp.web.wysiwyg.controller;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.sensweb.myapp.common.model.FileSaveResponseDto;
 
@@ -87,4 +94,29 @@ public class UploadController {
     public ResponseEntity<?> loadAllFiles(){
         return ResponseEntity.ok().body(upService.loadAll());
     }
+
+
+    @GetMapping("/loadAll2")
+    public List<Map<String,Object>> loadAll(HttpServletRequest request) {
+    	
+    	String dirName = "D:\\logs";
+    	   File dir = new File(dirName);   
+           List<Map<String,Object>> fileList = new ArrayList<Map<String,Object>>();
+           Map<String,Object> map = new HashMap<String, Object>();
+
+           File[] files = dir.listFiles();
+           //디렉토리의 파일목록(디렉토리포함)을 File 배열로 반환
+           for(File f: files){
+               // 디렉토리가 아니면
+               if(!f.isDirectory()){
+                
+            	   map.put("name", f.getName());
+        	   	   map.put("bytes", f.length());
+        	   	   fileList.add(map);
+               }
+           }
+           return fileList;
+    }
+    
+
 }
