@@ -1,8 +1,5 @@
 package com.sensweb.myapp.web.wysiwyg.controller;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.stream.Stream;
+import java.util.List;
 
 import com.sensweb.myapp.common.model.FileSaveResponseDto;
 
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @RestController
 @RequestMapping("/file")
@@ -41,6 +39,28 @@ public class UploadController {
         logger.debug("파일 정보 : {}", fsd.getFileInfo().toStringMultiline());
      //   logger.debug("resourse {}", upService.load(fsd.getFileInfo().getRenameFileName()));
         return ResponseEntity.ok().body(fsd);
+    }
+
+
+        /*
+     * 다중 파일 업로드
+     */
+    @PostMapping("/uploads")
+    public ResponseEntity<?> uploadFiles(MultipartHttpServletRequest multi) {
+        List<MultipartFile> fileList = multi.getFiles("files");
+        logger.debug("@@@ : " + fileList);
+        int count = 1;
+        for(MultipartFile file : fileList){
+            logger.debug("============= file {} ==============", count);
+            logger.debug("fileName {}",file.getOriginalFilename());
+            logger.debug("fileSiz {}",file.getSize());
+            logger.debug("fileContentType {}",file.getContentType());
+            logger.debug("fileResurce {}",file.getResource());
+            count++;
+        }
+       
+     //   logger.debug("resourse {}", upService.load(fsd.getFileInfo().getRenameFileName()));
+        return ResponseEntity.ok().body("ok");
     }
 
     /*

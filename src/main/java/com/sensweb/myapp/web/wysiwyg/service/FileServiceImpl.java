@@ -4,8 +4,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import jdk.internal.jline.internal.Log;
-
 import com.sensweb.myapp.common.utils.FileSaveUtils;
 
 import java.io.IOException;

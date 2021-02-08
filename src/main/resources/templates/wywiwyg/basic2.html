@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #submit{cursor: pointer;}
+    </style>
+</head>
+<body>
+    <form id ="frm" action ="/file/uploads" method ="post" enctype="multipart/form-data">
+
+        <!-- <input type ="submit" id ="submit" value="전송"/> -->
+        <div id ="submit">전송</div>
+    </form>
+    <input type ="file" name="files" />
+    <input type ="file" name="files" />
+    <input type ="file" name="files" />
+
+    <script src="/assets/js/jquery-3.3.1.min.js"></script>
+    <script>
+        // $('#submit').on('click',function(e){
+        //     e.preventDefault();
+        //     alert('안녕')
+        //     $('#frm').submit();
+        // })
+        
+        $('#submit').on('click',function(e){
+            e.preventDefault();
+            // Get form
+            var form = $('#frm')[0];
+            var file1 = $('input[name="files"]')[0];
+            // var f = new File("./basic.html");
+            console.log(file1);
+            // Create an FormData object 
+            var data = new FormData(form);
+            data.append("files", f);
+            // disabled the submit button
+            $("#btnSubmit").prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/file/uploads",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    alert("complete");
+                    $("#btnSubmit").prop("disabled", false);
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#btnSubmit").prop("disabled", false);
+                    alert("fail");
+                }
+            });
+         })
+           
+    </script>
+</body>
+</html>
