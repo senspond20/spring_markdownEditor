@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sensingEditor</title>
+<style>
+/*sensingEditor*/
+@media screen and (max-width: 1080px){
+     .sensingEditor .outputHtml{ display: none !important; } 
+     .sensingEditor .toggle{ display: none;}
+} 
+.sensingEditor .flex-c{display: flex; justify-content: center; align-items: center;}
+.sensingEditor .styling input{background-color: #fff; border-radius: 4px; border: 1px solid #666; cursor: pointer;}
+.sensingEditor .styling input:hover{background-color: #eee;}
+.sensingEditor .editor {background-color:#fff; border: 10px solid #f0f0f0; border-radius: 5px;}
+.sensingEditor .editor .item{ white-space: pre-wrap; overflow-y: scroll; float: left; width: 100vw; height: 70vh; padding: 20px 20px; outline: none; }
+/* .sensingEditor .editor .textArea {  } */
+.sensingEditor .toggle {float: right; cursor: pointer; background-color: #333; color: #fff; padding: 7px; border-radius: 10px;}
+.sensingEditor .editor .outputHtml { background-color: #333; color:#fff;} 
+.sensingEditor .btn {display: flex; justify-content: center; align-items: center; width: 15vw; background-color: rgb(160, 150, 156); color:#fff; height: 40px; border-radius: 10px; cursor: pointer;}
+.sensingEditor .btn:hover { background-color: rgb(216, 210, 214);}
+
+</style>
+</head>
+<body>
+
+    <form name ="sensingFrm" class="sensingEditor">
+        <div class="flex-c"><h1>sensingEditor</h1></div>
+        <div class="styling">
+            <input type="button" value="B" onclick="exc('bold')" />
+            <input type="button" value="Italic" onclick="exc('Italic')" />
+            <input type="button" value="Underline" onclick="exc('Underline')" />
+            <input type="button" value="StrikeThrough" onclick="exc('StrikeThrough')" />
+            <input type="button" value="왼쪽 정렬" onclick="exc('justifyleft')" />
+            <input type="button" value="가운데 정렬" onclick="exc('justifycenter')" />
+            <input type="button" value="오른쪽 정렬" onclick="exc('justifyright')" />
+        </div>
+        <div class ="editor flex-c">
+            <div class="item textArea" name ="content" contenteditable="true" autofocus></div>
+            <div class="item outputHtml"></div>
+        </div>
+        <div class="toggle">Toggle</div>
+        <div class ="btnArea flex-c">
+            <div class="btn submit">Sumbit</div>
+            <div class="btn cancel">Cancel</div>
+        </div>
+    </form>
+    <script>
+        var text = document.querySelector('.sensingEditor .textArea');
+        var outputhtml = document.querySelector('.sensingEditor .outputHtml');
+        var toggleBtn = document.querySelector('.sensingEditor .toggle');
+        function parse(){
+            outputhtml.textContent = text.innerHTML;
+        }
+        function exc(comand){
+            document.execCommand(comand);
+            parse();
+        }
+        text.addEventListener('keyup', parse);
+            toggleBtn.addEventListener('click', ()=> outputhtml.style.display = (outputhtml.style.display != 'none') ? 'none' : 'flex',false);
+    
+            var sumitBtn = document.querySelector('.sensingEditor .submit');
+            sumitBtn.addEventListener('click',function(e){
+                // form sumbit process
+                alert('sumbit')
+            });
+    </script>
+</body>
+</html>

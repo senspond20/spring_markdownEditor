@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset='utf-8'>
+    <!-- <link rel="stylesheet" href="/assets/css/md_css.css"> -->
+    <style>
+        #markdown{
+            width: 450px;
+            height: 600px;
+            border: 1px solid rebeccapurple;
+        }
+    </style>
 </head>
+
 <body>
-    <input type ="file">
     
+    <form action="/api/mark" method="post">
+        <!-- <a href="#" id="raw-switch" class="raw-switch">Raw: <span></span></a> -->
+        <!-- <aside id="markdown" name ="markdownContent" contenteditable></aside> -->
+        <textarea id="markdown" name ="markdownContent" ></textarea>
+        <input type ="submit" value="submit" id ="submit" width="100px"/>
+        <section id="output-html"></section>
+    </form>
+    <!-- <script>
+        document.querySelector('#submit').addEventListener('click',function(e){
+            e.preventDefault();
+
+        })
+    </script> -->
+
+    <script src="/assets/js/markdown.js">
+
+    </script>
 </body>
+
 </html>
