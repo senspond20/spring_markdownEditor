@@ -1,0 +1,132 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-touch.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-animate.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-aria.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/lodash.min.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/jszip.min.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/excel-builder.dist.js"></script>
+    <!-- <script src="/release/ui-grid.js"></script> -->
+    <!-- <link rel="stylesheet" href="/release/ui-grid.css" type="text/css"> -->
+    <!-- <script src="app.js"></script> -->
+    <style>
+        .grid {
+  width: 500px;
+  height: 200px;
+}
+    </style>
+  </head>
+  <body>
+    <div ng-controller="MainCtrl as main">
+      Click on a column header to sort by that column. (The third column has sorting disabled.)
+      To demonstrate the live sorting we provide a button that toggles the gender of Alexander Foley.
+      Sort by gender (ASC - so click twice) then name (using shift click), so that Alexander is at the top of the grid,
+      then click the toggleGender button.
+    
+      <br>
+      <br>
+      <button id='toggleGender' ng-click='main.toggleGender()' class="btn btn-success" >Toggle Gender</button>
+      <div id="grid1" ui-grid="main.gridOptions1" class="grid"></div>
+    
+      <br>
+      You can set an initial sort state for the grid by defining the `sort` property on your column definitions.
+      The `direction` sub-property says which way to sort, and the `priority` says what order to sort the columns
+      in (lower priority gets sorted first).
+      <br>
+      <br>
+    
+      <div id="grid2" ui-grid="main.gridOptions2" class="grid"></div>
+    </div>
+  </body>
+  <script>
+angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid'])
+  .controller('MainCtrl', MainCtrl);
+ 
+MainCtrl.$inject = ['$http', 'uiGridConstants'];
+ 
+function MainCtrl($http, uiGridConstants) {
+  var vm = this;
+ 
+  vm.gridOptions1 = {
+    enableSorting: true,
+    columnDefs: [
+      { field: 'name' },
+      { field: 'gender' },
+      { field: 'company', enableSorting: false }
+    ],
+    onRegisterApi: function( gridApi ) {
+      vm.grid1Api = gridApi;
+    }
+  };
+ 
+  vm.toggleGender = function() {
+    if( vm.gridOptions1.data[64].gender === 'male' ) {
+      vm.gridOptions1.data[64].gender = 'female';
+    } else {
+      vm.gridOptions1.data[64].gender = 'male';
+    };
+    vm.grid1Api.core.notifyDataChange( uiGridConstants.dataChange.EDIT );
+  };
+ 
+   vm.gridOptions2 = {
+    enableSorting: true,
+    onRegisterApi: function( gridApi ) {
+      vm.grid2Api = gridApi;
+    },
+    columnDefs: [
+      {
+        field: 'name',
+        sort: {
+          direction: uiGridConstants.DESC,
+          priority: 1
+        }
+      },
+      {
+        field: 'gender',
+        sort: {
+          direction: uiGridConstants.ASC,
+          priority: 0,
+        },
+        suppressRemoveSort: true,
+        sortingAlgorithm: function(a, b, rowA, rowB, direction) {
+          var nulls = vm.grid2Api.core.sortHandleNulls(a, b);
+          if( nulls !== null ) {
+            return nulls;
+          } else {
+            if( a === b ) {
+              return 0;
+            }
+            if( a === 'male' ) {
+              return 1;
+            }
+            if( b === 'male' ) {
+              return -1;
+            }
+            if( a == 'female' ) {
+              return 1;
+            }
+            if( b === 'female' ) {
+              return -1;
+            }
+            return 0;
+          }
+        }
+      },
+      { field: 'company', enableSorting: false  }
+    ]
+  };
+ 
+ $http.get('/data/100.json')
+    .then(function(response) {
+      vm.gridOptions1.data = response.data;
+      vm.gridOptions2.data = response.data;
+    });
+}
+
+  </script>
+</html>

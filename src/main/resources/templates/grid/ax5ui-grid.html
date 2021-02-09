@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />
+    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.min.js"></script>
+<style>
+    table tr:first-of-type{background-color:rgb(214, 84, 110);color: aliceblue;}
+</style>
+</head>
+
+<body>
+    <div data-ax5grid="first-grid" data-ax5grid-config="{}" style="width:100%; height:300px;"></div>
+    <script type="text/javascript">
+        //<![CDATA[ 
+        $(document).ready(function () {
+            /* dash(-)로 구분되는 날짜 포맷터 */
+            ax5.ui.grid.formatter["date"] = function () {
+                var date = this.value;
+                if (date.length == 8) {
+                    return date.substr(0, 4) + "-" + date.substr(4, 2) + "-" + date.substr(6);
+                } else {
+                    return date;
+                }
+            } /* 그리드 객체 생성 */
+            var firstGrid = new ax5.ui.grid();
+            /* 그리드 설정 지정 */
+            firstGrid.setConfig({
+                target: $('[data-ax5grid="first-grid"]'),
+                showLineNumber: false, // 라인번호
+                showRowSelector: true, // 셀렉터 체크박스
+                multipleSelect: false, // 다중 셀렉트
+                sortable  : true,  // 모든 컬럼에 정렬 아이콘 표시
+	             multiSort : false, // 다중 정렬 여부
+                lineNumberColumnWidth: 40,
+                rowSelectorColumnWidth: 27,
+                remoteSort: false, 
+	             lineNumberColumnWidth : 40,
+	             rowSelectorColumnWidth: 26,
+	             header: {
+	                        align: "center",
+	                        columnHeight: 25
+	                     },      
+	             body:   {
+	                        align: "center",
+	                        columnHeight: 25,
+                 },
+                columns: 
+                    [{
+                        key: "date",
+                        label: "날짜",
+                        formatter: "date",
+                        align: "center"
+                    }, {
+                        key: "type",
+                        label: "구분",
+                        align: "center"
+                    }, {
+                        key: "amount",
+                        label: "<strong>주유량</strong>",
+                        align: "center"
+                    },
+                    {
+                        key: "mileage",
+                        label: "주행거리(km)",
+                        align: "center"
+                    }, {
+                        key: "price",
+                        label: "금액(원)",
+                        formatter: "money",
+                        align: "center"
+                    }, {
+                        key: "repair",
+                        label: "정비내역",
+                        align: "center"
+                    }, {
+                        key: "note",
+                        label: "비고",
+                        align: "center"
+                    }
+                ]
+            }); /* 테스트용 데이터 생성 */
+            var list = [];
+            for (var i = 0; i < 50; i++) {
+                list.push({
+                    date: "20170101",
+                    type: "주유",
+                    amount: 25,
+                    mileage: (i + 1) * 100,
+                    price: 45000,
+                    repair: "-",
+                    note: "-"
+                });
+            } /* 그리드에 데이터 설정 */
+            firstGrid.setData(list);
+        }); //]]> 
+    </script>
+
+</body>
+
+</html>

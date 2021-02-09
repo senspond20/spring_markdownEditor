@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+</head>
+
+<body>
+    <div id="recruitGrid"></div>
+    <script>
+        //id를 grid로 지정
+
+        const Grid = new tui.Grid; //인스턴스 객체 생성
+
+        const recruitData = [{
+                field: '자바스크립트',
+                career: '7년',
+                age: '12세',
+                salary_desired: '1억'
+            },
+            {
+                field: '파이썬',
+                career: '3년',
+                age: '9세',
+                salary_desired: '2억'
+            },
+            {
+                field: '자바',
+                career: '9년',
+                age: '15세',
+                salary_desired: '3억'
+            },
+            {
+                field: 'A.I',
+                career: '10년',
+                age: '17세',
+                salary_desired: '4억'
+            }
+        ]
+
+        const recruitGrid = new Grid({
+            el: document.getElementById('recruitGrid'), // DOM의 id지정
+            columns: [{
+                    header: '분야',
+                    name: 'field',
+                    align: 'center'
+                },
+                {
+                    header: '경력',
+                    name: 'career',
+                    editor: 'text'
+                },
+                {
+                    header: '나이',
+                    name: 'age'
+                },
+                {
+                    header: '희망연봉',
+                    name: 'salary_desired'
+                }
+            ],
+            data: recruitData
+        });
+
+        recruitGrid.resetData(newData);
+        Grid.applyTheme('striped');
+    </script>
+</body>
+
+</html>
