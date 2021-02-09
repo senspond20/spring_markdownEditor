@@ -52,15 +52,27 @@ public class FileUtils {
     }
 
     /*
+        현재 프로젝트 경로를 가져온다.
+    */
+    public String getApplicationPath(){
+        return System.getProperty("user.dir");
+    }
+
+    public String getApplicationStaticPath(){   
+        return Paths.get(System.getProperty("user.dir") + "/src/main/resources/static").toString();
+    }
+   
+
+    /*
         자바 Object 를 JsonStr 로 변환한다. (Jackson ObjectMapper)
         Spring Framework 를 STS로 생성시 Jackson 라이브러리가 빠져있지만
         Spring Boot 는 기본으로 내장되어 있다.
     */
-    public String ObjectToJsonStr(Object obj, boolean pretty) {
+    public String ObjectToJsonStr(Object obj, boolean isPretty) {
         String jsonStr = "";
         ObjectMapper om = new ObjectMapper();
         try {
-            jsonStr = (pretty == false) 
+            jsonStr = (isPretty == false) 
                     ? om.writeValueAsString(obj)
                     : om.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
@@ -149,13 +161,17 @@ public class FileUtils {
     /*
         자바 객체를 Json File로 저장. (Jackson ObjectMapper)
     */
-    public void saveObjToJsonFile(String filePath, String fileName, Object obj){
+    public boolean saveObjToJsonFile(String filePath, String fileName, Object obj , boolean isPretty){
         File f = mkExcheckAndgetFile(filePath,fileName);
         ObjectMapper om = new ObjectMapper();
         try {
-            om.writeValue(f, obj);
+            if(!isPretty)
+                om.writeValue(f, obj);
+            else
+                om.writerWithDefaultPrettyPrinter().writeValue(f, obj);
+            return true;
         } catch (IOException e) {
-            throw new RuntimeException();
+            return false;
         }
     }
 

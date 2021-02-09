@@ -12,6 +12,7 @@ import com.sensweb.myapp.web.board.model.BoardVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +47,7 @@ public class BoardController {
     }
 
 
-    @GetMapping("/make")
+    @GetMapping("/make3")
     @ResponseBody
     public Object makeBoard() throws IOException {
         List<BoardVo> boarList = new ArrayList<>();
@@ -62,7 +63,7 @@ public class BoardController {
         logger.debug("spsp {}", fu.getStaticPath());
         logger.debug("js {}", fu.ObjectToJsonStr(boarList, true));
 
-        fu.saveObjToJsonFile(fu.getStaticPath(), "board.json", boarList);
+        fu.saveObjToJsonFile(fu.getStaticPath(), "board.json", boarList, false);
         // File f = new File("./board.json");
         // if(!f.exists()){
         //     f.mkdirs();
@@ -73,4 +74,16 @@ public class BoardController {
 
         return boarList;
     }
+
+    @GetMapping("/make3")
+    @ResponseBody
+    public boolean makeBoard3() {
+        List<BoardVo> boarList = new ArrayList<>();
+        for(int i = 1; i <= 1000000; i ++){
+            boarList.add(new BoardVo(i, "안녕하세요" + i, "내용입니다." + i));
+        }
+
+        return fu.saveObjToJsonFile(fu.getApplicationStaticPath() + "/build/data", "board.json", boarList, false);
+    }
+
 }

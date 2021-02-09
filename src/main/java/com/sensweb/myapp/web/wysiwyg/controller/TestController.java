@@ -43,15 +43,14 @@ public class TestController {
         jo1.put("content", "내용1");
         
         
-    
-        
-        
         String jsonStr = jo1.toJSONString();
         
         System.out.println(jsonStr);
         
    //     Map<String,String> a = new ObjectMapper().readValue("{\"title\":\"제목1\",\"content\":\"내용1\"}", Map.class);
         System.out.println(jo1);
+    
+    
 
         
    
