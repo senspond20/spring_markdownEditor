@@ -4,6 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +24,9 @@ public class FileUtils {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    /*
+        Resource 경로를 가져온다. (target 폴더 아래에 생긴다.)
+    */
     public String getResoucePath(String path) {
         Resource resource = resourceLoader.getResource(path);
         String realPath = "";
@@ -39,6 +46,11 @@ public class FileUtils {
         return getResoucePath("classpath:/static/data");
     }
 
+    /*
+        자바 Object 를 JsonStr 로 변환한다. (Jackson ObjectMapper)
+        Spring Framework 를 STS로 생성시 Jackson 라이브러리가 빠져있지만
+        Spring Boot 는 기본으로 내장되어 있다.
+    */
     public String ObjectToJsonStr(Object obj, boolean pretty) {
         String jsonStr = "";
         ObjectMapper om = new ObjectMapper();
@@ -59,16 +71,19 @@ public class FileUtils {
         return new ObjectMapper().convertValue(obj, CommandMapDto.class);
     }
 
+    /*
+        파일 경로에 폴더가 없으면 생성하고 저장할 파일객체 만들어 리턴.
+    */
     private File mkExcheckAndgetFile (String filePath, String fileName){
         File d = new File(filePath);
-        if(!d.exists()){
-            d.mkdirs();
-        }
-        return new File(filePath + "/" + fileName);
+            if(!d.exists()){
+                d.mkdirs();
+            }
+        return new File(Paths.get(filePath.concat("/").concat(fileName)).toString());
     }
-
+ 
     /*
-        FileSave : Java Io
+        FileSave : Java Io /       파일 저장
     */
     public void saveFile(String filePath, String fileName, String data){
         File f = mkExcheckAndgetFile(filePath, fileName);
@@ -76,7 +91,7 @@ public class FileUtils {
         (
             BufferedWriter writer = new BufferedWriter(new FileWriter(f));
         ) {
-            System.out.println("fff " + f.toURI().toString());
+            // System.out.printf("filepath %s \n", f.toURI().toString());
             writer.write(data);
             writer.close();
           } catch (IOException e) {
@@ -85,7 +100,7 @@ public class FileUtils {
     }
 
     /*
-        FileSave : Jackson ObjectMapper
+        자바 객체를 Json File로 저장. (Jackson ObjectMapper)
     */
     public void saveObjToJsonFile(String filePath, String fileName, Object obj){
         File f = mkExcheckAndgetFile(filePath,fileName);
@@ -96,5 +111,32 @@ public class FileUtils {
             throw new RuntimeException();
         }
     }
+
+
+    /*
+        파일경로에서 파일 목록을 가져온다.
+    */
+    public List<String> loadFileList(String path, boolean includeDirectory) {
+		List<String> list = new ArrayList<String>();
+		File f = new File(path);
+		File[] fileList = null;
+        
+		if(f.exists()) {
+			fileList = f.listFiles();
+            
+            if(includeDirectory){
+                for(File ff : fileList) { // 리렉토리 인것도 추가
+                   list.add(ff.getName());
+                }	
+            }else{
+                for(File ff : fileList) {
+                    if(! ff.isDirectory()){ // 리렉토리가 아닌 목록만 추가
+                        list.add(ff.getName());
+                    }	
+                }	
+            }
+		}	
+		return list;
+	}
 
 }
