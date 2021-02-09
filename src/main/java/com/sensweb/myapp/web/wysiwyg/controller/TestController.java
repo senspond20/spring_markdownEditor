@@ -10,11 +10,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.sensweb.myapp.common.utils.FileUtils;
 
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestController {
 
+   
     public static void main(String[] args) throws JsonMappingException {
 
          List<String> values0 = new ArrayList<String>() {
@@ -40,6 +43,8 @@ public class TestController {
         jo1.put("content", "내용1");
         
         
+    
+        
         
         String jsonStr = jo1.toJSONString();
         
@@ -47,6 +52,8 @@ public class TestController {
         
    //     Map<String,String> a = new ObjectMapper().readValue("{\"title\":\"제목1\",\"content\":\"내용1\"}", Map.class);
         System.out.println(jo1);
+
+        
    
     }
 }

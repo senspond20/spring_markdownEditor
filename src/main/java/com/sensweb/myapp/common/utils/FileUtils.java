@@ -4,19 +4,24 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.math.BigDecimal;
 import com.sensweb.myapp.common.model.CommandMapDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class FileUtils {
@@ -67,8 +72,50 @@ public class FileUtils {
     /*
         Java 객체를 commandMap Dto로 변환
     */
+    public Map<String,Object> objectToMapFromObjectMapper(Object obj){
+        Map<String,Object> map = null;
+        try { 
+         map = new ObjectMapper().convertValue(obj, Map.class);
+        }catch(Exception e){
+            throw new RuntimeException();
+        }
+        return map;
+    }
+
+    public Map<String,Object> objectToMap(Object obj, Map<String,Object> map){
+        Class<?> cls = obj.getClass();
+
+        for (Field field : cls.getDeclaredFields()) {
+            field.setAccessible(true);
+ 
+            Object value = null;
+            String key;
+ 
+            try {
+                key = field.getName();
+                value = field.get(obj);
+
+                if (value!=null) {
+                    map.put(key, value);
+                } else if (value instanceof BigDecimal) {
+                    map.put(key, value);
+                } else {
+                    objectToMap(value, map);
+                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+            
+            }
+        
+     
+        }
+        return map;
+    }
+    
+
     public CommandMapDto objectToCommandMapDto(Object obj){
-        return new ObjectMapper().convertValue(obj, CommandMapDto.class);
+        CommandMapDto dto = new CommandMapDto();
+            dto.putAll(objectToMapFromObjectMapper(obj));
+        return dto;
     }
 
     /*

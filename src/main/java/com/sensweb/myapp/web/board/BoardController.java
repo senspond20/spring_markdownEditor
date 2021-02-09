@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sensweb.myapp.common.model.CommandMapDto;
 import com.sensweb.myapp.common.utils.FileUtils;
 import com.sensweb.myapp.web.board.model.BoardVo;
 
@@ -34,6 +35,16 @@ public class BoardController {
     public String index() {
         return "grid/toast-ui-gird";
     }
+
+    @GetMapping("/convert")
+    @ResponseBody
+    public Object covert(CommandMapDto cmap){
+        BoardVo board = new BoardVo(1,"안녕하세요","제목입니다.");
+    
+        cmap = fu.objectToCommandMapDto(board);
+        return cmap;
+    }
+
 
     @GetMapping("/make")
     @ResponseBody
