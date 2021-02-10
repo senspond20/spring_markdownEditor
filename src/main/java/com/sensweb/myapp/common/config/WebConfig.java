@@ -16,14 +16,24 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+    
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = { "classpath:/static/", "classpath:/public/", "classpath:/",
+    "classpath:/resources/", "classpath:/META-INF/resources/", "classpath:/META-INF/resources/webjars/" };
 
     private final boolean CACHEABLE = false; // 배포시에는 true
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
         registry.addResourceHandler("/public/**")
             .addResourceLocations("classpath:/static/build/")
             .setCachePeriod(20);
+    }
+
+    
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index");
     }
 
     /* 
@@ -65,9 +75,5 @@ public class WebConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index");
-    }
     
 }
