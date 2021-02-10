@@ -75,15 +75,4 @@ public class BoardController {
         return boarList;
     }
 
-    @GetMapping("/make3")
-    @ResponseBody
-    public boolean makeBoard3() {
-        List<BoardVo> boarList = new ArrayList<>();
-        for(int i = 1; i <= 1000000; i ++){
-            boarList.add(new BoardVo(i, "안녕하세요" + i, "내용입니다." + i));
-        }
-
-        return fu.saveObjToJsonFile(fu.getApplicationStaticPath() + "/build/data", "board.json", boarList, false);
-    }
-
 }
